@@ -1,7 +1,9 @@
+export type InputType = "text" | "date" | "dynamic";
+
 export interface FieldConfig {
   name: string;
   label: string;
-  type: "text" | "date";
+  type: InputType;
   minLength?: number;
   maxLength?: number;
   placeholder?: string;
@@ -19,23 +21,23 @@ export const GRID_COLS: Record<number, string> = {
 };
 
 export const buildValidation = (field: FieldConfig) => {
-    const rules: any = {};
-    if (field.required) rules.required = `${field.label} is required!`;
-    if (field.minLength)
-      rules.minLength = {
-        value: field.minLength,
-        message: `${field.label} must be at least ${field.minLength} characters`,
-      };
-    if (field.maxLength)
-      rules.maxLength = {
-        value: field.maxLength,
-        message: `${field.label} must be at most ${field.maxLength} characters`,
-      };
-    if (field.pattern) {
-      rules.pattern = {
-        value: field.pattern,
-        message: `${field.label} format is invalid`,
-      };
-    }
-    return rules;
-  };
+  const rules: any = {};
+  if (field.required) rules.required = `${field.label} is required!`;
+  if (field.minLength)
+    rules.minLength = {
+      value: field.minLength,
+      message: `${field.label} must be at least ${field.minLength} characters`,
+    };
+  if (field.maxLength)
+    rules.maxLength = {
+      value: field.maxLength,
+      message: `${field.label} must be at most ${field.maxLength} characters`,
+    };
+  if (field.pattern) {
+    rules.pattern = {
+      value: field.pattern,
+      message: `${field.label} format is invalid`,
+    };
+  }
+  return rules;
+};

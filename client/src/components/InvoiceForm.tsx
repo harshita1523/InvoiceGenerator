@@ -29,7 +29,6 @@ const InvoiceForm = () => {
       placeholder: "Enter GST number",
       section: "Seller Details",
     },
-
     {
       name: "buyer_name",
       label: "Buyer Name",

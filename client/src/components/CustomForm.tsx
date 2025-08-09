@@ -1,10 +1,11 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldError } from "react-hook-form";
 import {
   buildValidation,
   GRID_COLS,
   type FieldConfig,
 } from "../utils/CutsomFormHelpers";
+import CustomInput from "./CustomInput";
 
 interface CustomFormProps {
   questions: FieldConfig[];
@@ -56,30 +57,15 @@ const CustomForm: React.FC<CustomFormProps> = ({
             )}
             <div className={`grid gap-4 ${GRID_COLS[cols] || GRID_COLS[1]}`}>
               {fields.map((field) => (
-                <div key={field.name} className="flex flex-col">
-                  <label
-                    htmlFor={field.name}
-                    className="mb-1 text-sm font-medium text-gray-700 flex items-center gap-1"
-                  >
-                    {field.label}
-                    {field.required && <span className="text-red-500">*</span>}:
-                  </label>
-
-                  <input
-                    id={field.name}
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors[field.name] ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register(field.name, buildValidation(field))}
-                  />
-                  {errors[field.name] && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {errors[field.name]?.message?.toString()}
-                    </p>
-                  )}
-                </div>
+                <CustomInput
+                  id={field.name}
+                  label={field.label}
+                  required={field.required}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  register={register(field.name, buildValidation(field))}
+                  error={errors[field.name] as FieldError}
+                />
               ))}
             </div>
           </div>
