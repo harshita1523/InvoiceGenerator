@@ -1,8 +1,12 @@
 import { GST_REGEX, type FieldConfig } from "../utils/CutsomFormHelpers";
 import CustomForm from "./CustomForm";
+import api from "../api/axios";
 
 const InvoiceForm = () => {
-  const onSubmit = () => {};
+  const onSubmit = async(formData:any) => {
+    const {data}=await api.post('/generate-invoice',formData);
+    console.log("Data donee",data)
+  };
 
   const formconfig: FieldConfig[] = [
     {
