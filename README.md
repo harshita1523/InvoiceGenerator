@@ -72,14 +72,19 @@ npm run dev
 ```
 
 
-### Backend (React)
+### Backend (Fast API Python)
 
 ```bash
 cd server
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
+###Deployment Links
+https://invoicegenerator-client.onrender.com/
+https://invoicegenerator-4803.onrender.com
 
 
+<img width="1920" height="1080" alt="Screenshot (316)" src="https://github.com/user-attachments/assets/b7cb9e00-c16e-4a3b-9148-b7cf75c1442d" />
 
+<img width="1894" height="886" alt="Screenshot 2025-08-09 192412" src="https://github.com/user-attachments/assets/bd84dd46-122e-44a4-a385-065a8bd44b5f" />
 
