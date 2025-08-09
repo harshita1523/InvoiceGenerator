@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useFieldArray,
   type Control,
@@ -32,6 +32,15 @@ const DynamicFieldArray: React.FC<DynamicFieldArray> = ({
     control,
     name,
   });
+
+  const [initialized, setInitialized] = useState(false);
+
+  if (!initialized && fields.length === 0) {
+    append(Object.fromEntries(fieldsConfig.map(f => [f.name, ""])));
+    setInitialized(true);
+  }
+
+  
   return (
     <div className="space-y-4">
       {fields.map((item, index) => (

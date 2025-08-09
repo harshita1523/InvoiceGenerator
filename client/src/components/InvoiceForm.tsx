@@ -1,96 +1,43 @@
-import { GST_REGEX, type FieldConfig } from "../utils/CutsomFormHelpers";
-import CustomForm from "./CustomForm";
+import { useState } from "react";
 import api from "../api/axios";
+import CustomForm from "./CustomForm";
+import { invoiceFormConfig } from "./invoice.config";
 
 const InvoiceForm = () => {
-  const onSubmit = async(formData:any) => {
-    const {data}=await api.post('/generate-invoice',formData);
-    console.log("Data donee",data)
-  };
+  const [urlState, setUrlState] = useState({
+    url: "",
+    loading: false,
+    error: "",
+    success: false,
+  });
 
-  const formconfig: FieldConfig[] = [
-    {
-      name: "seller_name",
-      label: "Seller Name",
-      type: "text",
-      placeholder: "Enter seller name",
-      required: true,
-      section: "Seller Details",
-    },
-    {
-      name: "seller_address",
-      label: "Seller Address",
-      type: "text",
-      placeholder: "Enter seller address",
-      required: true,
-      section: "Seller Details",
-    },
-    {
-      name: "seller_gst",
-      label: "Seller GST Number",
-      type: "text",
-      pattern: GST_REGEX,
-      placeholder: "Enter GST number",
-      section: "Seller Details",
-    },
-    {
-      name: "buyer_name",
-      label: "Buyer Name",
-      type: "text",
-      placeholder: "Enter buyer name",
-      required: true,
-      section: "Buyer Details",
-    },
-    {
-      name: "buyer_address",
-      label: "Buyer Address",
-      type: "text",
-      placeholder: "Enter buyer address",
-      required: true,
-      section: "Buyer Details",
-    },
-    {
-      name: "buyer_gst",
-      label: "Buyer GST Number",
-      type: "text",
-      pattern: GST_REGEX,
-      placeholder: "Enter GST number",
-      section: "Buyer Details",
-    },
-    {
-      name: "invoice_number",
-      label: "Invoice Number",
-      type: "text",
-      placeholder: "Enter invoice number",
-      required: true,
-      section: "Invoice Details",
-    },
-    {
-      name: "invoice_date",
-      label: "Invoice Date",
-      type: "date",
-      required: true,
-      section: "Invoice Details",
-    },
+  const onSubmit = async (formData:any) => {
+    setUrlState({ loading: true, success: false, error: "", url: "" });
 
-    {
-      name: "products",
-      label: "Product Line Items",
-      type: "dynamic",
-      section: "Product Details",
-      fields: [
-        { name: "product_name", label: "Product Name", type: "text", placeholder: "Enter product name", required: true },
-        { name: "quantity", label: "Quantity", type: "number", placeholder: "Enter quantity", required: true },
-        { name: "rate", label: "Rate per Unit", type: "number", placeholder: "Enter rate", required: true },
-        { name: "tax", label: "Tax %", type: "number", placeholder: "Enter tax percentage" }
-      ]
+    try {
+      const { data } = await api.post("/generate-invoice", formData, {
+        responseType: "blob",
+      });
+
+      const file = new Blob([data], { type: "application/pdf" });
+      const fileUrl = URL.createObjectURL(file);
+
+      setUrlState((prev) => ({ ...prev, url: fileUrl, success: true }));
+    } catch (error: any) {
+      setUrlState({
+        url: "",
+        loading: true,
+        error: error.message,
+        success: false,
+      });
+    } finally {
+      setUrlState((prev) => ({ ...prev, loading: false }));
     }
-  ];
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-200 flex items-center justify-center p-6">
       <div className="max-w-4xl w-full">
-        {/* Page Heading */}
         <div className="text-center mb-4">
           <h1 className="text-3xl font-bold text-blue-700">
             Invoice Generator
@@ -104,17 +51,46 @@ const InvoiceForm = () => {
           </p>
         </div>
 
-        {/* Form */}
+        <div className="max-w-md mx-auto my-6 space-y-4 text-center">
+          {urlState.loading && (
+            <p className="text-blue-600 font-medium">
+              Generating invoice, please wait...
+            </p>
+          )}
+
+          {urlState.error && (
+            <p className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              Error: {urlState.error}
+            </p>
+          )}
+          {urlState.success && (
+            <div className="p-4 bg-green-100 border border-green-400 text-green-800 rounded-md">
+              <p className="text-lg font-semibold mb-3">
+                Invoice generated successfully!
+              </p>
+              {urlState.url && (
+                <a
+                  href={urlState.url}
+                  download="invoice.pdf"
+                  className="inline-block px-6 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition"
+                >
+                  Download Invoice
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+
         <CustomForm
           onSubmit={onSubmit}
-          questions={formconfig}
+          questions={invoiceFormConfig}
           sectionwiseForm
           columns={2}
           sectionColumns={{
             "Seller Details": 3,
             "Buyer Details": 3,
             "Invoice Info": 2,
-            "Product Details":1
+            "Product Details": 1,
           }}
         />
       </div>
