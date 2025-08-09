@@ -6,6 +6,7 @@ import {
   type FieldConfig,
 } from "../utils/CutsomFormHelpers";
 import CustomInput from "./CustomInput";
+import DynamicFieldArray from "./DynamicFieldArray";
 
 interface CustomFormProps {
   questions: FieldConfig[];
@@ -25,6 +26,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -56,17 +58,31 @@ const CustomForm: React.FC<CustomFormProps> = ({
               </h2>
             )}
             <div className={`grid gap-4 ${GRID_COLS[cols] || GRID_COLS[1]}`}>
-              {fields.map((field) => (
-                <CustomInput
-                  id={field.name}
-                  label={field.label}
-                  required={field.required}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                  register={register(field.name, buildValidation(field))}
-                  error={errors[field.name] as FieldError}
-                />
-              ))}
+              {fields.map((field) => {
+                if (field.type === "dynamic" && field.fields)
+                  return (
+                    <DynamicFieldArray
+                      key={field.name}
+                      name={field.name}
+                      label={field.name}
+                      register={register}
+                      fieldsConfig={field.fields}
+                      errors={errors}
+                      control={control}
+                    />
+                  );
+                return (
+                  <CustomInput
+                    id={field.name}
+                    label={field.label}
+                    required={field.required}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    register={register(field.name, buildValidation(field))}
+                    error={errors[field.name] as FieldError}
+                  />
+                );
+              })}
             </div>
           </div>
         );

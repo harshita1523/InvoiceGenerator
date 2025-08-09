@@ -69,17 +69,18 @@ const InvoiceForm = () => {
       section: "Invoice Details",
     },
 
-    // {
-    //   name: "products",
-    //   label: "Product Line Items",
-    //   type: "dynamic",
-    //   fields: [
-    //     { name: "product_name", label: "Product Name", type: "text", placeholder: "Enter product name", required: true },
-    //     { name: "quantity", label: "Quantity", type: "number", placeholder: "Enter quantity", required: true },
-    //     { name: "rate", label: "Rate per Unit", type: "number", placeholder: "Enter rate", required: true },
-    //     { name: "tax", label: "Tax %", type: "number", placeholder: "Enter tax percentage" }
-    //   ]
-    // }
+    {
+      name: "products",
+      label: "Product Line Items",
+      type: "dynamic",
+      section: "Product Details",
+      fields: [
+        { name: "product_name", label: "Product Name", type: "text", placeholder: "Enter product name", required: true },
+        { name: "quantity", label: "Quantity", type: "number", placeholder: "Enter quantity", required: true },
+        { name: "rate", label: "Rate per Unit", type: "number", placeholder: "Enter rate", required: true },
+        { name: "tax", label: "Tax %", type: "number", placeholder: "Enter tax percentage" }
+      ]
+    }
   ];
 
   return (
@@ -109,6 +110,7 @@ const InvoiceForm = () => {
             "Seller Details": 3,
             "Buyer Details": 3,
             "Invoice Info": 2,
+            "Product Details":1
           }}
         />
       </div>
